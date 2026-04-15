@@ -3,9 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { signOut } from "next-auth/react";
+
 // Usando herocons SVG
 const IconHome = () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>;
 const IconAPI = () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>;
+const IconUsers = () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>;
 const IconLogout = () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>;
 
 export default function Sidebar({ user }: { user?: any }) {
@@ -16,6 +19,10 @@ export default function Sidebar({ user }: { user?: any }) {
     { name: "Projetos", href: "/dashboard", icon: <IconHome /> },
     { name: "Global APIs", href: "/dashboard/apis", icon: <IconAPI /> },
   ];
+
+  if (user?.role === 'ADMIN') {
+    menuItems.push({ name: "Usuários", href: "/dashboard/usuarios", icon: <IconUsers /> });
+  }
 
   return (
     <aside
@@ -60,25 +67,20 @@ export default function Sidebar({ user }: { user?: any }) {
 
       <div className="p-4 border-t border-gray-800/60 flex items-center justify-between">
         {!collapsed && (
-          <div className="flex flex-col truncate">
+          <div className="flex flex-col min-w-0">
             <span className="text-sm font-semibold text-gray-200 truncate">{user?.name}</span>
-            <span className="text-xs text-gray-500 truncate">{user?.role}</span>
+            <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">
+              {user?.role || "USER"}
+            </span>
           </div>
         )}
-        <form
-          action={async () => {
-            // Em client component, fazemos form action post para um endpoint ou usamos signOut do next-auth
-            await fetch("/api/auth/signout", { method: "POST" });
-            window.location.href = "/";
-          }}
+        <button
+          onClick={() => signOut({ callbackUrl: "/" })}
+          title="Sair"
+          className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition-colors"
         >
-          <button
-            title="Sair"
-            className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition-colors"
-          >
-            <IconLogout />
-          </button>
-        </form>
+          <IconLogout />
+        </button>
       </div>
     </aside>
   );

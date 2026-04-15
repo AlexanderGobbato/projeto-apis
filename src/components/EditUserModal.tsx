@@ -26,8 +26,8 @@ export default function EditUserModal({ usuario }: { usuario: Usuario }) {
   }
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-gray-900 border border-gray-700/60 rounded-3xl p-8 w-full max-w-md shadow-2xl relative animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-950/90 backdrop-blur-md animate-in fade-in duration-300">
+      <div className="bg-gray-900 border border-gray-700/60 rounded-3xl p-8 w-full max-w-md shadow-[0_0_50px_rgba(0,0,0,0.5)] relative animate-in zoom-in-95 duration-200">
         <button 
           onClick={() => setIsOpen(false)}
           className="absolute top-6 right-6 text-gray-400 hover:text-white transition"

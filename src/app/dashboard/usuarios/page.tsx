@@ -61,13 +61,13 @@ export default async function UsuariosPage() {
 
         {/* Listagem de usuários */}
         <div className="xl:col-span-2">
-          <div className="bg-gray-800/40 border border-gray-700/80 p-0 rounded-2xl overflow-hidden backdrop-blur-md">
+          <div className="bg-gray-800/40 border border-gray-700/80 rounded-2xl backdrop-blur-md">
             <table className="w-full text-left">
               <thead>
                 <tr className="bg-gray-900/50 border-b border-gray-700/60 text-xs font-bold text-gray-500 uppercase tracking-widest">
-                  <th className="px-6 py-4">Usuário</th>
+                  <th className="px-6 py-4 rounded-tl-2xl">Usuário</th>
                   <th className="px-6 py-4">Perfil</th>
-                  <th className="px-6 py-4 text-right">Ações</th>
+                  <th className="px-6 py-4 text-right rounded-tr-2xl">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800/50">

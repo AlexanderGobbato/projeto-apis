@@ -27,7 +27,7 @@ export default async function UsuariosPage() {
         <div className="xl:col-span-1">
           <div className="bg-gray-800/40 border border-gray-700/80 p-6 rounded-2xl backdrop-blur-md sticky top-8">
             <h2 className="text-xl font-bold text-white mb-6">Novo Usuário</h2>
-            <form action={createUserAction} className="space-y-4">
+            <form action={async (fd) => { "use server"; await createUserAction(fd); }} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Nome Completo</label>
                 <input name="nome" required className="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 transition" />

@@ -38,29 +38,29 @@ async function SearchResults({ query }: { query: string }) {
     <div className="space-y-4">
       <p className="text-sm text-gray-400 mb-6">{resultados.length} resultados encontrados.</p>
       {resultados.map((recurso) => (
-        <div key={recurso.id} className="bg-gray-800/40 border border-gray-700/50 p-6 rounded-2xl">
+        <div key={recurso.id} className="card-md3 p-6 bg-white overflow-hidden">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
-              <span className={`px-2.5 py-1 text-xs font-bold rounded
-                ${recurso.metodo === 'GET' ? 'bg-blue-500/20 text-blue-400' : 
-                  recurso.metodo === 'POST' ? 'bg-emerald-500/20 text-emerald-400' : 
-                  recurso.metodo === 'PUT' ? 'bg-amber-500/20 text-amber-400' : 
-                  recurso.metodo === 'DELETE' ? 'bg-red-500/20 text-red-400' : 
-                  'bg-gray-500/20 text-gray-400'}`
-              }>
+              <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${
+                recurso.metodo === 'GET' ? 'bg-[#e8f0fe] text-[#1a73e8] border-[#d2e3fc]' : 
+                recurso.metodo === 'POST' ? 'bg-[#e6f4ea] text-[#1e8e3e] border-[#ceead6]' : 
+                recurso.metodo === 'PUT' ? 'bg-[#fef7e0] text-[#f4b400] border-[#fce8b2]' : 
+                recurso.metodo === 'DELETE' ? 'bg-[#fde8e8] text-[#d93025] border-[#fad2cf]' : 
+                'bg-[#f1f3f4] text-[#5f6368] border-[#e0e0e0]'
+              }`}>
                 {recurso.metodo}
               </span>
-              <span className="text-lg text-white font-mono">{recurso.path}</span>
+              <span className="text-lg text-[#1f1f1f] font-mono font-medium">{recurso.path}</span>
             </div>
-            <Link href={`/dashboard/projetos/${recurso.projeto_id}`} className="text-sm font-medium text-blue-400 hover:text-blue-300 transition">
+            <Link href={`/dashboard/projetos/${recurso.projeto_id}`} className="text-sm font-bold text-[#1a73e8] hover:underline transition">
               Acessar Projeto: {recurso.projeto.nome_projeto} &rarr;
             </Link>
           </div>
           
-          <div className="flex gap-2 mt-4 text-xs font-medium">
-            <div className={`px-2 py-1 rounded-md border ${recurso.publicado_dev ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-gray-800/50 text-gray-600 border-transparent'}`}>DEV</div>
-            <div className={`px-2 py-1 rounded-md border ${recurso.publicado_hml ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-gray-800/50 text-gray-600 border-transparent'}`}>HML</div>
-            <div className={`px-2 py-1 rounded-md border ${recurso.publicado_prd ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-gray-800/50 text-gray-600 border-transparent'}`}>PRD</div>
+          <div className="flex gap-2 mt-4 text-[10px] font-bold">
+            <div className={`px-2.5 py-1 rounded-full border ${recurso.publicado_dev ? 'bg-[#e8f0fe] text-[#1a73e8] border-[#1a73e8]' : 'bg-gray-100 text-gray-300 border-transparent'}`}>DEV</div>
+            <div className={`px-2.5 py-1 rounded-full border ${recurso.publicado_hml ? 'bg-[#fef7e0] text-[#f4b400] border-[#f4b400]' : 'bg-gray-100 text-gray-300 border-transparent'}`}>HML</div>
+            <div className={`px-2.5 py-1 rounded-full border ${recurso.publicado_prd ? 'bg-[#e6f4ea] text-[#1e8e3e] border-[#1e8e3e]' : 'bg-gray-100 text-gray-300 border-transparent'}`}>PRD</div>
           </div>
         </div>
       ))}
@@ -74,30 +74,31 @@ export default async function GlobalSearchPage(props: { searchParams?: Promise<{
   const q = searchParams?.q || "";
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-[1400px] mx-auto">
       <div>
-        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 tracking-tight">Rastreio Global de APIs</h1>
-        <p className="text-gray-400 mt-2">Busque por rotas, fragmentos JSON de request/response e documentações entre todos os projetos.</p>
+        <h1 className="text-4xl font-bold text-[#1f1f1f] tracking-tight">Rastreio Global de APIs</h1>
+        <p className="text-[#5f6368] mt-2 text-base">Busque por rotas, fragmentos JSON de request/response e documentações entre todos os projetos.</p>
       </div>
 
-      <div className="bg-gray-800/40 border border-gray-700 rounded-2xl p-6 shadow-lg backdrop-blur-xl">
+      <div className="bg-white border border-[#e0e0e0] rounded-[24px] p-6 shadow-sm">
         <form className="flex gap-4">
           <div className="relative flex-1">
-            <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#5f6368]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input 
               name="q"
               defaultValue={q}
-              className="w-full pl-12 pr-4 py-4 bg-gray-900 border border-gray-700/80 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-inner" 
+              className="w-full pl-12 pr-4 py-4 bg-[#f1f3f4] border-b-2 border-[#1a73e8] rounded-t-xl text-[#1f1f1f] focus:outline-none focus:bg-[#e8f0fe] transition-all" 
               placeholder='Buscar em JSON (... "idUsuario": 123 ...)' 
             />
           </div>
-          <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white font-medium px-8 py-4 rounded-xl transition shadow-lg shadow-blue-500/20">
+          <button type="submit" className="bg-[#1a73e8] hover:bg-[#1b66c9] text-white font-bold px-10 py-4 rounded-full transition shadow-md">
             Buscar
           </button>
         </form>
       </div>
+
 
       <Suspense key={q} fallback={<div className="flex justify-center p-12"><div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div></div>}>
         <SearchResults query={q} />

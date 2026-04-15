@@ -29,29 +29,29 @@ export default function CreateProjectModal({ onClose }: { onClose: () => void })
 
         <form action={action} className="space-y-6">
           <div className="space-y-1">
-            <label className="block text-xs font-bold text-[#444746] ml-1">NOME DO PROJETO</label>
-            <input name="nome_projeto" required className="w-full px-4 py-3 bg-[#f1f3f4] border-b-2 border-transparent focus:border-[#1a73e8] rounded-t-lg text-[#1f1f1f] focus:outline-none transition-colors" placeholder="Ex: API de Pagamentos" />
+            <label className="block text-xs font-bold text-[#444746] ml-1 uppercase">NOME DO PROJETO</label>
+            <input name="nome_projeto" required className="w-full px-4 py-3 bg-[#f1f3f4] border-b-2 border-[#1a73e8] rounded-t-lg text-[#1f1f1f] focus:outline-none focus:bg-[#e8f0fe] transition-all" placeholder="Ex: API de Pagamentos" />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="block text-xs font-bold text-[#444746] ml-1">SERVIDOR</label>
-              <input name="server" className="w-full px-4 py-3 bg-[#f1f3f4] border-b-2 border-transparent focus:border-[#1a73e8] rounded-t-lg text-[#1f1f1f] focus:outline-none transition-colors" placeholder="AWS / On-Prem" />
+              <label className="block text-xs font-bold text-[#444746] ml-1 uppercase">SERVIDOR</label>
+              <input name="server" className="w-full px-4 py-3 bg-[#f1f3f4] border-b-2 border-[#1a73e8] rounded-t-lg text-[#1f1f1f] focus:outline-none focus:bg-[#e8f0fe] transition-all" placeholder="AWS / On-Prem" />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-bold text-[#444746] ml-1">URL BASE</label>
-              <input name="url_base" className="w-full px-4 py-3 bg-[#f1f3f4] border-b-2 border-transparent focus:border-[#1a73e8] rounded-t-lg text-[#1f1f1f] focus:outline-none transition-colors" placeholder="https://..." />
+              <label className="block text-xs font-bold text-[#444746] ml-1 uppercase">URL BASE</label>
+              <input name="url_base" className="w-full px-4 py-3 bg-[#f1f3f4] border-b-2 border-[#1a73e8] rounded-t-lg text-[#1f1f1f] focus:outline-none focus:bg-[#e8f0fe] transition-all" placeholder="https://..." />
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="block text-xs font-bold text-[#444746] ml-1">REPOSITÓRIO GIT</label>
-            <input name="git_url" className="w-full px-4 py-3 bg-[#f1f3f4] border-b-2 border-transparent focus:border-[#1a73e8] rounded-t-lg text-[#1f1f1f] focus:outline-none transition-colors" placeholder="https://github.com/..." />
+            <label className="block text-xs font-bold text-[#444746] ml-1 uppercase">REPOSITÓRIO GIT</label>
+            <input name="git_url" className="w-full px-4 py-3 bg-[#f1f3f4] border-b-2 border-[#1a73e8] rounded-t-lg text-[#1f1f1f] focus:outline-none focus:bg-[#e8f0fe] transition-all" placeholder="https://github.com/..." />
           </div>
 
           <div className="space-y-1">
-            <label className="block text-xs font-bold text-[#444746] ml-1">ANOTAÇÕES</label>
-            <textarea name="anotacoes" rows={3} className="w-full px-4 py-3 bg-[#f1f3f4] border-b-2 border-transparent focus:border-[#1a73e8] rounded-t-lg text-[#1f1f1f] focus:outline-none transition-colors resize-none" placeholder="Detalhes técnicos relevantes..."></textarea>
+            <label className="block text-xs font-bold text-[#444746] ml-1 uppercase">ANOTAÇÕES</label>
+            <textarea name="anotacoes" rows={3} className="w-full px-4 py-3 bg-[#f1f3f4] border-b-2 border-[#1a73e8] rounded-t-lg text-[#1f1f1f] focus:outline-none focus:bg-[#e8f0fe] transition-all resize-none" placeholder="Detalhes técnicos relevantes..."></textarea>
           </div>
 
           {state?.error && (

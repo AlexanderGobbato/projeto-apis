@@ -49,8 +49,8 @@ async function ProjectList() {
 
         return (
           <div key={projeto.id} className="relative group card-md3 p-6 flex flex-col h-full bg-white">
-            {/* Ações Flutuantes MD3 */}
-            <div className="absolute top-4 right-4 z-20 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            {/* Ações Administrativas Sempre Visíveis */}
+            <div className="absolute top-4 right-4 z-20 flex gap-1 transition-opacity">
               <EditProjectModal projeto={{
                 id: projeto.id,
                 nome_projeto: projeto.nome_projeto,

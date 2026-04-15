@@ -186,7 +186,7 @@ export default async function ProjectPage(props: { params: Promise<{ id: string 
                         </div>
                       </td>
                       <td className="py-5 px-4 text-right">
-                        <div className="flex gap-2 justify-end items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex gap-2 justify-end items-center transition-opacity">
                           <EditResourceModal 
                             recurso={{
                               id: rec.id,

@@ -90,7 +90,7 @@ export default async function UsuariosPage() {
                       </span>
                     </td>
                     <td className="px-8 py-6 text-right">
-                      <div className="flex justify-end items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex justify-end items-center gap-4 transition-opacity">
                         <EditUserModal usuario={{
                           id: u.id,
                           nome: u.nome || "",

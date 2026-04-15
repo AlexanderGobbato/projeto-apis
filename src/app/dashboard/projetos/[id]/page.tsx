@@ -1,9 +1,21 @@
-import { PrismaClient } from "@prisma/client";
-export const dynamic = 'force-dynamic';
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { createScopeAction, createRecursoAction, toggleAmbienteAction } from "@/lib/actions/resource-actions";
+import { createScopeAction, createRecursoAction, toggleAmbienteAction, deleteRecursoAction } from "@/lib/actions/resource-actions";
 import { prisma } from "@/auth";
+import EditResourceModal from "@/components/EditResourceModal";
+
+export const dynamic = 'force-dynamic';
+
+// Helper para formatar JSON com identação (Pretty Print)
+function formatJson(data: string | null) {
+  if (!data) return null;
+  try {
+    const obj = JSON.parse(data);
+    return JSON.stringify(obj, null, 2);
+  } catch (e) {
+    return data; // Retorna texto bruto se não for JSON válido
+  }
+}
 
 // Usando o pattern oficial no Next.js 15: props.params é uma Promise.
 export default async function ProjectPage(props: { params: Promise<{ id: string }> }) {
@@ -53,20 +65,20 @@ export default async function ProjectPage(props: { params: Promise<{ id: string 
           
           {/* Card: Adicionar Scope */}
           <div className="bg-gray-800/40 border border-gray-700/80 p-6 rounded-2xl">
-             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">🔗 Scopes do Projeto</h3>
-             <form action={async (fd) => { "use server"; await createScope(fd); }} className="flex gap-2 mb-6">
-               <input name="identificador_scope" placeholder="user:read" className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white" />
-               <button type="submit" className="bg-gray-700 hover:bg-gray-600 text-white rounded-lg px-3 py-2 text-sm transition">+</button>
-             </form>
-             
-             <ul className="space-y-2">
-               {projeto.scopes.map(scope => (
-                 <li key={scope.id} className="text-sm text-gray-300 bg-gray-900/50 px-3 py-2 rounded-lg border border-gray-700/30 flex justify-between">
-                   <span className="font-mono">{scope.identificador_scope}</span>
-                 </li>
-               ))}
-               {projeto.scopes.length === 0 && <li className="text-xs text-gray-500">Nenhum scope cadastrado.</li>}
-             </ul>
+              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">🔗 Scopes do Projeto</h3>
+              <form action={async (fd) => { "use server"; await createScope(fd); }} className="flex gap-2 mb-6">
+                <input name="identificador_scope" placeholder="user:read" className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white" />
+                <button type="submit" className="bg-gray-700 hover:bg-gray-600 text-white rounded-lg px-3 py-2 text-sm transition">+</button>
+              </form>
+              
+              <ul className="space-y-2">
+                {projeto.scopes.map(scope => (
+                  <li key={scope.id} className="text-sm text-gray-300 bg-gray-900/50 px-3 py-2 rounded-lg border border-gray-700/30 flex justify-between">
+                    <span className="font-mono">{scope.identificador_scope}</span>
+                  </li>
+                ))}
+                {projeto.scopes.length === 0 && <li className="text-xs text-gray-500">Nenhum scope cadastrado.</li>}
+              </ul>
           </div>
 
         </div>
@@ -83,9 +95,8 @@ export default async function ProjectPage(props: { params: Promise<{ id: string 
                   <tr className="border-b border-gray-700/60 text-sm text-gray-400">
                     <th className="pb-3 px-4 font-medium">Método</th>
                     <th className="pb-3 px-4 font-medium">Path</th>
-                    <th className="pb-3 px-4 font-medium text-center">DEV</th>
-                    <th className="pb-3 px-4 font-medium text-center">HML</th>
-                    <th className="pb-3 px-4 font-medium text-center">PRD</th>
+                    <th className="pb-3 px-4 font-medium text-center">AMBIENTE</th>
+                    <th className="pb-3 px-4 font-medium text-right">AÇÕES</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -105,8 +116,8 @@ export default async function ProjectPage(props: { params: Promise<{ id: string 
                               <summary className="hover:text-blue-400 transition-colors uppercase font-bold tracking-tighter list-none flex items-center gap-1">
                                 <span className="group-open/json:rotate-90 transition-transform">▶</span> Request
                               </summary>
-                              <pre className="mt-2 p-2 bg-black/40 rounded border border-gray-700/50 text-gray-400 overflow-x-auto max-w-xs xl:max-w-md">
-                                {rec.request}
+                              <pre className="mt-2 p-3 bg-black/60 rounded-xl border border-gray-700/50 text-blue-300 font-mono text-[11px] overflow-x-auto max-w-xs xl:max-w-md whitespace-pre shadow-inner">
+                                {formatJson(rec.request)}
                               </pre>
                             </details>
                           )}
@@ -115,33 +126,46 @@ export default async function ProjectPage(props: { params: Promise<{ id: string 
                               <summary className="hover:text-emerald-400 transition-colors uppercase font-bold tracking-tighter list-none flex items-center gap-1">
                                 <span className="group-open/json:rotate-90 transition-transform">▶</span> Response
                               </summary>
-                              <pre className="mt-2 p-2 bg-black/40 rounded border border-gray-700/50 text-gray-400 overflow-x-auto max-w-xs xl:max-w-md">
-                                {rec.response}
+                              <pre className="mt-2 p-3 bg-black/60 rounded-xl border border-gray-700/50 text-emerald-300 font-mono text-[11px] overflow-x-auto max-w-xs xl:max-w-md whitespace-pre shadow-inner">
+                                {formatJson(rec.response)}
                               </pre>
                             </details>
                           )}
                         </div>
                       </td>
                       <td className="py-4 px-4 text-center">
-                        <form action={async () => { "use server"; await toggleAmbienteAction(rec.id, projeto.id, 'dev', rec.publicado_dev); }}>
-                          <button type="submit" className={`w-8 h-8 rounded-full inline-flex items-center justify-center transition-colors ${rec.publicado_dev ? 'bg-blue-500/20 text-blue-400 border border-blue-500/40 shadow-[0_0_10px_rgba(59,130,246,0.3)]' : 'bg-gray-900 border border-gray-700 text-transparent'}`}>✓</button>
-                        </form>
+                        <div className="flex gap-1 justify-center">
+                          <form action={async () => { "use server"; await toggleAmbienteAction(rec.id, projeto.id, 'dev', rec.publicado_dev); }}>
+                            <button type="submit" title="DEV" className={`w-8 h-8 rounded-lg inline-flex items-center justify-center text-[10px] font-bold transition-all ${rec.publicado_dev ? 'bg-blue-500/20 text-blue-400 border border-blue-500/40 shadow-[0_0_10px_rgba(59,130,246,0.3)]' : 'bg-gray-900 border border-gray-700 text-gray-600'}`}>D</button>
+                          </form>
+                          <form action={async () => { "use server"; await toggleAmbienteAction(rec.id, projeto.id, 'hml', rec.publicado_hml); }}>
+                            <button type="submit" title="HML" className={`w-8 h-8 rounded-lg inline-flex items-center justify-center text-[10px] font-bold transition-all ${rec.publicado_hml ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.3)]' : 'bg-gray-900 border border-gray-700 text-gray-600'}`}>H</button>
+                          </form>
+                          <form action={async () => { "use server"; await toggleAmbienteAction(rec.id, projeto.id, 'prd', rec.publicado_prd); }}>
+                            <button type="submit" title="PRD" className={`w-8 h-8 rounded-lg inline-flex items-center justify-center text-[10px] font-bold transition-all ${rec.publicado_prd ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-[0_0_10px_rgba(16,185,129,0.3)]' : 'bg-gray-900 border border-gray-700 text-gray-600'}`}>P</button>
+                          </form>
+                        </div>
                       </td>
-                      <td className="py-4 px-4 text-center">
-                         <form action={async () => { "use server"; await toggleAmbienteAction(rec.id, projeto.id, 'hml', rec.publicado_hml); }}>
-                          <button type="submit" className={`w-8 h-8 rounded-full inline-flex items-center justify-center transition-colors ${rec.publicado_hml ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.3)]' : 'bg-gray-900 border border-gray-700 text-transparent'}`}>✓</button>
-                        </form>
-                      </td>
-                      <td className="py-4 px-4 text-center">
-                         <form action={async () => { "use server"; await toggleAmbienteAction(rec.id, projeto.id, 'prd', rec.publicado_prd); }}>
-                          <button type="submit" className={`w-8 h-8 rounded-full inline-flex items-center justify-center transition-colors ${rec.publicado_prd ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/40 shadow-[0_0_10px_rgba(16,185,129,0.3)]' : 'bg-gray-900 border border-gray-700 text-transparent'}`}>✓</button>
-                        </form>
+                      <td className="py-4 px-4 text-right">
+                        <div className="flex gap-3 justify-end items-center">
+                          <EditResourceModal recurso={rec} projetoId={projeto.id} />
+                          <form 
+                            action={async () => { "use server"; await deleteRecursoAction(rec.id, projeto.id); }}
+                            onSubmit={(e) => {
+                              if (!confirm("Tem certeza que deseja excluir permanentemente este endpoint?")) {
+                                e.preventDefault();
+                              }
+                            }}
+                          >
+                            <button type="submit" className="text-gray-500 hover:text-red-500 transition-colors text-sm font-medium">Excluir</button>
+                          </form>
+                        </div>
                       </td>
                     </tr>
                   ))}
                   {projeto.recursos.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="text-center py-8 text-gray-500">Nenhum endpoint adicionado. Use o formulário abaixo.</td>
+                      <td colSpan={4} className="text-center py-8 text-gray-500">Nenhum endpoint adicionado. Use o formulário abaixo.</td>
                     </tr>
                   )}
                 </tbody>

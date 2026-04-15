@@ -1,8 +1,8 @@
 import { PrismaClient } from "@prisma/client";
+export const dynamic = 'force-dynamic';
 import Link from "next/link";
 import { Suspense } from "react";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/auth";
 
 async function SearchResults({ query }: { query: string }) {
   if (!query) {

@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import Link from "next/link";
+export const dynamic = 'force-dynamic';
 import { Suspense } from "react";
 import CreateProjectButton from "@/components/CreateProjectButton";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/auth";
 
 async function ProjectList() {
   const projetos = await prisma.projeto.findMany({

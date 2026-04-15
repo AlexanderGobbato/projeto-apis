@@ -1,6 +1,7 @@
 import { prisma, auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { createUserAction, deleteUserAction } from "@/lib/actions/user-actions";
+import { createUserAction, deleteUserAction, updateUserAction } from "@/lib/actions/user-actions";
+import EditUserModal from "@/components/EditUserModal";
 
 export const dynamic = 'force-dynamic';
 
@@ -84,13 +85,22 @@ export default async function UsuariosPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      {session.user.id !== u.id && (
-                        <form action={async () => { "use server"; await deleteUserAction(u.id); }}>
-                          <button className="text-gray-500 hover:text-red-500 transition-colors text-sm font-medium">
-                            Remover
-                          </button>
-                        </form>
-                      )}
+                      <div className="flex justify-end items-center">
+                        <EditUserModal usuario={{
+                          id: u.id,
+                          nome: u.nome || "",
+                          email: u.email || "",
+                          cpf: u.cpf || "",
+                          perfil_acesso: u.perfil_acesso || "USER"
+                        }} />
+                        {session.user.id !== u.id && (
+                          <form action={async () => { "use server"; await deleteUserAction(u.id); }}>
+                            <button className="text-gray-500 hover:text-red-500 transition-colors text-sm font-medium">
+                              Remover
+                            </button>
+                          </form>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}

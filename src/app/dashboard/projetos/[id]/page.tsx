@@ -1,9 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { createScopeAction, createRecursoAction, toggleAmbienteAction } from "@/lib/actions/resource-actions";
+import { createScopeAction, createRecursoAction, toggleAmbienteAction, deleteRecursoAction } from "@/lib/actions/resource-actions";
 import { prisma } from "@/auth";
 import EditResourceModal from "@/components/EditResourceModal";
 import DeleteResourceButton from "@/components/DeleteResourceButton";
+import EditScopeModal from "@/components/EditScopeModal";
+import DeleteScopeButton from "@/components/DeleteScopeButton";
 
 export const dynamic = 'force-dynamic';
 
@@ -67,8 +69,12 @@ export default async function ProjectPage(props: { params: Promise<{ id: string 
               </form>
               <ul className="space-y-2">
                 {projeto.scopes.map(scope => (
-                  <li key={scope.id} className="text-sm text-gray-300 bg-gray-900/50 px-3 py-2 rounded-lg border border-gray-700/30 flex justify-between">
+                  <li key={scope.id} className="text-sm text-gray-300 bg-gray-900/50 px-3 py-2 rounded-lg border border-gray-700/30 flex justify-between items-center group/scope">
                     <span className="font-mono">{scope.identificador_scope}</span>
+                    <div className="flex gap-1 opacity-0 group-hover/scope:opacity-100 transition-opacity">
+                      <EditScopeModal scope={scope} projetoId={projeto.id} />
+                      <DeleteScopeButton scopeId={scope.id} projetoId={projeto.id} identificador={scope.identificador_scope} />
+                    </div>
                   </li>
                 ))}
                 {projeto.scopes.length === 0 && <li className="text-xs text-gray-500">Nenhum scope cadastrado.</li>}

@@ -24,3 +24,41 @@ export async function createProjectAction(prevState: any, formData: FormData) {
     return { error: "Erro ao criar projeto." };
   }
 }
+
+export async function updateProjectAction(id: string, formData: FormData) {
+  try {
+    const data = Object.fromEntries(formData.entries());
+    
+    await prisma.projeto.update({
+      where: { id },
+      data: {
+        nome_projeto: data.nome_projeto as string,
+        server: data.server as string,
+        url_base: data.url_base as string,
+        git_url: data.git_url as string,
+        anotacoes: data.anotacoes as string,
+      }
+    });
+
+    revalidatePath("/dashboard");
+    revalidatePath(`/dashboard/projetos/${id}`);
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { error: "Erro ao atualizar projeto." };
+  }
+}
+
+export async function deleteProjectAction(id: string) {
+  try {
+    await prisma.projeto.delete({
+      where: { id }
+    });
+
+    revalidatePath("/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { error: "Erro ao excluir projeto." };
+  }
+}

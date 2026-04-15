@@ -22,6 +22,36 @@ export async function createScopeAction(projetoId: string, formData: FormData) {
   }
 }
 
+export async function updateScopeAction(id: string, projetoId: string, formData: FormData) {
+  try {
+    const identificador = formData.get("identificador_scope") as string;
+    if (!identificador) return { error: "Identificador é obrigatório" };
+
+    await prisma.scope.update({
+      where: { id },
+      data: { identificador_scope: identificador }
+    });
+
+    revalidatePath(`/dashboard/projetos/${projetoId}`);
+    return { success: true };
+  } catch (e) {
+    return { error: "Erro ao atualizar Scope" };
+  }
+}
+
+export async function deleteScopeAction(id: string, projetoId: string) {
+  try {
+    await prisma.scope.delete({
+      where: { id }
+    });
+
+    revalidatePath(`/dashboard/projetos/${projetoId}`);
+    return { success: true };
+  } catch (e) {
+    return { error: "Erro ao excluir Scope" };
+  }
+}
+
 export async function createRecursoAction(projetoId: string, formData: FormData) {
   try {
     await prisma.recurso.create({

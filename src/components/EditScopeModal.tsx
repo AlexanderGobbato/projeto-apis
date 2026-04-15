@@ -16,7 +16,7 @@ export default function EditScopeModal({
     return (
       <button 
         onClick={() => setIsOpen(true)}
-        className="text-gray-500 hover:text-blue-400 transition-colors p-1"
+        className="text-[#5f6368] hover:bg-[#f1f3f4] transition-colors p-1 rounded-md"
         title="Editar Scope"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -27,9 +27,9 @@ export default function EditScopeModal({
   }
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-gray-950/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-gray-800 border border-gray-700 p-6 rounded-2xl w-full max-w-sm shadow-2xl animate-in zoom-in-95 duration-200">
-        <h3 className="text-lg font-bold text-white mb-4">Editar Scope</h3>
+    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-gray-500/10 backdrop-blur-[2px] animate-in fade-in duration-200">
+      <div className="modal-md3 p-6 w-full max-w-xs relative animate-in zoom-in-95 duration-200">
+        <h3 className="text-base font-bold text-[#1f1f1f] mb-4">Editar Identificador</h3>
         
         <form 
           action={async (fd) => {
@@ -42,13 +42,13 @@ export default function EditScopeModal({
             name="identificador_scope" 
             defaultValue={scope.identificador_scope} 
             required 
-            placeholder="Ex: user:write"
-            className="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 transition"
+            autoFocus
+            className="w-full bg-[#f1f3f4] border-b-2 border-transparent focus:border-[#1a73e8] rounded-t-lg px-3 py-2 text-sm text-[#1f1f1f] focus:outline-none transition-colors"
           />
           
           <div className="flex justify-end gap-2 pt-2">
-            <button type="button" onClick={() => setIsOpen(false)} className="px-4 py-2 text-sm text-gray-400 hover:text-white transition">Cancelar</button>
-            <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-sm font-bold transition">Salvar</button>
+            <button type="button" onClick={() => setIsOpen(false)} className="px-4 py-2 text-xs font-bold text-[#1a73e8] hover:bg-[#e8f0fe] rounded-full transition">Devolver</button>
+            <button type="submit" className="bg-[#1a73e8] hover:bg-[#1b66c9] text-white px-5 py-2 rounded-full text-xs font-bold transition shadow-sm">Salvar</button>
           </div>
         </form>
       </div>

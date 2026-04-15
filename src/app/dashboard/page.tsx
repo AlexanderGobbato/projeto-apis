@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import Link from "next/link";
 export const dynamic = 'force-dynamic';
 import { Suspense } from "react";
@@ -26,12 +25,14 @@ async function ProjectList() {
 
   if (projetos.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-16 border border-dashed border-gray-700/50 rounded-3xl bg-gray-800/20 backdrop-blur-sm">
-        <svg className="w-16 h-16 text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-        </svg>
-        <h3 className="text-xl font-medium text-gray-300">Nenhum projeto cadastrado</h3>
-        <p className="text-gray-500 mt-2 text-center max-w-sm">Comece criando seu primeiro projeto para rastrear suas APIs e ambientes.</p>
+      <div className="flex flex-col items-center justify-center p-20 border border-dashed border-[#e0e0e0] rounded-[32px] bg-white">
+        <div className="w-16 h-16 bg-[#f8f9fa] rounded-full flex items-center justify-center mb-6">
+          <svg className="w-8 h-8 text-[#5f6368]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9l-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <h3 className="text-xl font-semibold text-[#1f1f1f]">Nenhum projeto ainda</h3>
+        <p className="text-[#70757a] mt-2 text-center max-w-xs text-sm">Crie seu primeiro projeto para começar a gerenciar suas APIs com governança.</p>
         <div className="mt-8">
           <CreateProjectButton />
         </div>
@@ -42,15 +43,14 @@ async function ProjectList() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       {projetos.map((projeto) => {
-        // Estatísticas do projeto
         const prdCount = projeto.recursos.filter(r => r.publicado_prd).length;
         const total = projeto._count.recursos;
         const completion = total > 0 ? Math.round((prdCount / total) * 100) : 0;
 
         return (
-          <div key={projeto.id} className="relative group">
-            {/* Botões de Ação Flutuantes */}
-            <div className="absolute top-4 right-4 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div key={projeto.id} className="relative group card-md3 p-6 flex flex-col h-full bg-white">
+            {/* Ações Flutuantes MD3 */}
+            <div className="absolute top-4 right-4 z-20 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
               <EditProjectModal projeto={{
                 id: projeto.id,
                 nome_projeto: projeto.nome_projeto,
@@ -62,50 +62,47 @@ async function ProjectList() {
               <DeleteProjectButton projectId={projeto.id} projectName={projeto.nome_projeto} />
             </div>
 
-            <Link href={`/dashboard/projetos/${projeto.id}`} className="flex flex-col bg-gray-800/40 hover:bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-blue-900/20 hover:-translate-y-1 overflow-hidden h-full">
-               
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <svg className="w-24 h-24 text-blue-500 transform rotate-12 translate-x-4 -translate-y-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-              </div>
-
-              <div className="relative z-10 flex-1">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-2xl font-semibold text-white tracking-tight pr-16">{projeto.nome_projeto}</h3>
-                  <span className="bg-blue-500/10 text-blue-400 text-xs px-3 py-1 rounded-full font-medium border border-blue-500/20">
-                    {projeto._count.scopes} Scopes
-                  </span>
-                </div>
-                
-                <p className="text-gray-400 text-sm mb-6 line-clamp-2">
-                  {projeto.anotacoes || "Sem descrição..."}
-                </p>
-
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-400">Total APIs:</span>
-                    <span className="text-gray-200 font-medium">{total}</span>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs text-gray-400">
-                      <span>Deploy PRD</span>
-                      <span className="text-emerald-400">{completion}%</span>
-                    </div>
-                    <div className="h-2 w-full bg-gray-900 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-gradient-to-r from-blue-500 to-emerald-400 rounded-full transition-all duration-1000"
-                        style={{ width: `${completion}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
+            <Link href={`/dashboard/projetos/${projeto.id}`} className="flex-1 flex flex-col">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-xl font-semibold text-[#1f1f1f] pr-12 line-clamp-1">{projeto.nome_projeto}</h3>
               </div>
               
-              <div className="relative z-10 mt-6 pt-4 border-t border-gray-700/50 flex justify-between items-center group-hover:border-gray-600/50 transition-colors">
-                <span className="text-blue-400 font-medium text-sm">Acessar Painel &rarr;</span>
-                <span className="text-gray-500 text-xs">
-                  {projeto.server || "Server N/A"}
+              <div className="flex items-center gap-2 mb-4">
+                 <span className="text-[11px] bg-[#f1f3f4] text-[#444746] px-2 py-0.5 rounded-full border border-[#e0e0e0]">
+                  {projeto._count.scopes} scopes
                 </span>
+                <span className="text-[11px] bg-[#e8f0fe] text-[#1a73e8] px-2 py-0.5 rounded-full border border-[#d2e3fc]">
+                  {total} recursos
+                </span>
+              </div>
+
+              <p className="text-[#70757a] text-sm mb-6 line-clamp-3 flex-1">
+                {projeto.anotacoes || "Nenhuma descrição disponível para este projeto."}
+              </p>
+
+              <div className="space-y-3 pt-4 border-t border-[#f1f3f4]">
+                <div className="flex items-center justify-between">
+                   <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#1a73e8]"></div>
+                      <span className="text-xs font-medium text-[#444746]">Deploy Progress</span>
+                   </div>
+                   <span className="text-xs font-bold text-[#1a73e8]">{completion}%</span>
+                </div>
+                <div className="h-1.5 w-full bg-[#f1f3f4] rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-[#1a73e8] transition-all duration-1000"
+                    style={{ width: `${completion}%` }}
+                  ></div>
+                </div>
+                <div className="flex justify-between items-center mt-2">
+                   <span className="text-[#34a853] font-bold text-[10px] uppercase tracking-wider flex items-center gap-1">
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
+                      PRD Status
+                   </span>
+                   <span className="text-[10px] text-gray-400 font-mono">
+                      {projeto.server || "localhost"}
+                   </span>
+                </div>
               </div>
             </Link>
           </div>
@@ -117,17 +114,23 @@ async function ProjectList() {
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div>
-          <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 tracking-tight">Projetos</h1>
-          <p className="text-gray-400 mt-2">Gerencie governança, scopes e deployments de suas APIs.</p>
+          <h1 className="text-4xl font-bold text-[#1f1f1f] tracking-tight">Painel de Projetos</h1>
+          <p className="text-[#70757a] mt-1 text-base">Visualize e gerencie a governança das suas APIs e recursos técnicos.</p>
         </div>
         
-        <CreateProjectButton />
+        <div className="flex-shrink-0">
+          <CreateProjectButton />
+        </div>
       </div>
 
-      <Suspense fallback={<div className="h-64 flex items-center justify-center text-gray-500">Carregando projetos...</div>}>
+      <Suspense fallback={
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {[1,2,3].map(i => <div key={i} className="h-56 bg-white animate-pulse rounded-[20px] border border-[#e0e0e0]"></div>)}
+        </div>
+      }>
          <ProjectList />
       </Suspense>
     </div>

@@ -10,12 +10,13 @@ export default function CreateProjectButton() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 px-5 rounded-xl transition duration-200 shadow-lg shadow-blue-500/25 flex items-center gap-2 transform hover:scale-105 active:scale-95"
+        className="bg-[#c2e7ff] hover:bg-[#b3d7ef] text-[#001d35] font-semibold py-4 px-6 rounded-[20px] transition duration-200 shadow-sm flex items-center gap-3 group"
+        title="Novo Projeto"
       >
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        <svg className="w-6 h-6 text-[#001d35] group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
         </svg>
-        Novo Projeto
+        <span className="text-sm">Novo Projeto</span>
       </button>
       
       {isOpen && <CreateProjectModal onClose={() => setIsOpen(false)} />}

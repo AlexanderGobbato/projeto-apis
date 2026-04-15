@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+model Usuario {
+  id            String   @id @default(cuid())
+  cpf           String   @unique
+  nome          String
+  email         String?  @unique
+  perfil_acesso String   @default("USER") // 'ADMIN', 'USER'
+  criadoEm      DateTime @default(now())
+}
+
+model Projeto {
+  id           String     @id @default(cuid())
+  nome_projeto String
+  server       String?
+  url_base     String?
+  git_url      String?
+  anotacoes    String?
+  criadoEm     DateTime   @default(now())
+  scopes       Scope[]
+  recursos     Recurso[]
+}
+
+model Scope {
+  id                  String   @id @default(cuid())
+  projeto_id          String
+  projeto             Projeto  @relation(fields: [projeto_id], references: [id], onDelete: Cascade)
+  identificador_scope String
+}
+
+model Recurso {
+  id                  String   @id @default(cuid())
+  projeto_id          String
+  projeto             Projeto  @relation(fields: [projeto_id], references: [id], onDelete: Cascade)
+  metodo              String   // GET, POST, PUT, DELETE, PATCH
+  path                String
+  request             String?  @db.Text
+  response            String?  @db.Text
+  procedure_transacao String?
+  anotacoes           String?
+  publicado_dev       Boolean  @default(false)
+  publicado_hml       Boolean  @default(false)
+  publicado_prd       Boolean  @default(false)
+}

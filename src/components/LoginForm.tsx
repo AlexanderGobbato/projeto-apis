@@ -10,20 +10,20 @@ export function LoginForm() {
     <div className="bg-gray-800/80 backdrop-blur-xl p-10 rounded-2xl shadow-2xl w-full max-w-md border border-gray-700/50">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-extrabold text-white mb-2 tracking-tight">API Governance</h1>
-        <p className="text-gray-400">Acesse com o simulador Gov.br</p>
+        <p className="text-gray-400">Acesse com suas credenciais</p>
       </div>
 
       <form action={action} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2" htmlFor="cpf">
-            CPF
+          <label className="block text-sm font-medium text-gray-300 mb-2" htmlFor="email">
+            E-mail
           </label>
           <input
-            type="text"
-            id="cpf"
-            name="cpf"
+            type="email"
+            id="email"
+            name="email"
             required
-            placeholder="Qualquer valor numérico"
+            placeholder="seu@email.com"
             className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition text-white"
           />
         </div>
@@ -37,7 +37,6 @@ export function LoginForm() {
             id="senha"
             name="senha"
             required
-            defaultValue="admin"
             className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition text-white"
           />
         </div>

@@ -13,6 +13,7 @@ model Usuario {
   cpf           String   @unique
   nome          String
   email         String?  @unique
+  senha         String?
   perfil_acesso String   @default("USER") // 'ADMIN', 'USER'
   criadoEm      DateTime @default(now())
 }

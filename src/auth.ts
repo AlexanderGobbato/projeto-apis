@@ -1,6 +1,7 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaClient } from "@prisma/client"
+import bcrypt from "bcryptjs"
 
 // Evita várias instâncias do Prisma em ambiente de dev
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
@@ -10,31 +11,30 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     CredentialsProvider({
-      name: 'Simulador Gov.br',
+      name: 'Credentials',
       credentials: {
-        cpf: { label: "CPF", type: "text", placeholder: "Insira qualquer CPF" },
-        senha: { label: "Senha", type: "password", placeholder: "admin" }
+        email: { label: "Email", type: "email", placeholder: "seu@email.com" },
+        senha: { label: "Senha", type: "password" }
       },
       async authorize(credentials) {
-        if (!credentials?.cpf || credentials.senha !== "admin") return null;
+        if (!credentials?.email || !credentials?.senha) return null;
         
-        const cpfLimpo = (credentials.cpf as string).replace(/\D/g, "");
-
-        let user = await prisma.usuario.findUnique({
-          where: { cpf: cpfLimpo }
+        const user = await prisma.usuario.findUnique({
+          where: { email: credentials.email as string }
         });
 
-        if (!user) {
-           user = await prisma.usuario.create({
-             data: {
-               cpf: cpfLimpo,
-               nome: "Usuário Mock Gov.br",
-               perfil_acesso: "ADMIN"
-             }
-           });
-        }
+        if (!user || !user.senha) return null;
 
-        return { id: user.id, name: user.nome, email: user.email || undefined, role: user.perfil_acesso };
+        const isValid = await bcrypt.compare(credentials.senha as string, user.senha);
+
+        if (!isValid) return null;
+
+        return { 
+          id: user.id, 
+          name: user.nome, 
+          email: user.email, 
+          role: user.perfil_acesso 
+        };
       }
     })
   ],
@@ -54,6 +54,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }
   },
   pages: {
-    signIn: '/', // A página de login será a home
+    signIn: '/',
   }
 });

@@ -10,7 +10,7 @@ export async function loginAction(prevState: any, formData: FormData) {
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
-          return "Credenciais inválidas. Use a senha 'admin'.";
+          return "Credenciais inválidas. Verifique seu e-mail e senha.";
         default:
           return "Ocorreu um erro inesperado na autenticação.";
       }

@@ -97,7 +97,31 @@ export default async function ProjectPage(props: { params: Promise<{ id: string 
                             rec.metodo === 'POST' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gray-500/20 text-gray-400'}`
                         }>{rec.metodo}</span>
                       </td>
-                      <td className="py-4 px-4 font-mono text-sm text-gray-200">{rec.path}</td>
+                      <td className="py-4 px-4 font-mono text-sm text-gray-200">
+                        <div>{rec.path}</div>
+                        <div className="flex gap-4 mt-2">
+                          {rec.request && (
+                            <details className="text-[10px] text-gray-500 cursor-pointer group/json">
+                              <summary className="hover:text-blue-400 transition-colors uppercase font-bold tracking-tighter list-none flex items-center gap-1">
+                                <span className="group-open/json:rotate-90 transition-transform">▶</span> Request
+                              </summary>
+                              <pre className="mt-2 p-2 bg-black/40 rounded border border-gray-700/50 text-gray-400 overflow-x-auto max-w-xs xl:max-w-md">
+                                {rec.request}
+                              </pre>
+                            </details>
+                          )}
+                          {rec.response && (
+                            <details className="text-[10px] text-gray-500 cursor-pointer group/json">
+                              <summary className="hover:text-emerald-400 transition-colors uppercase font-bold tracking-tighter list-none flex items-center gap-1">
+                                <span className="group-open/json:rotate-90 transition-transform">▶</span> Response
+                              </summary>
+                              <pre className="mt-2 p-2 bg-black/40 rounded border border-gray-700/50 text-gray-400 overflow-x-auto max-w-xs xl:max-w-md">
+                                {rec.response}
+                              </pre>
+                            </details>
+                          )}
+                        </div>
+                      </td>
                       <td className="py-4 px-4 text-center">
                         <form action={async () => { "use server"; await toggleAmbienteAction(rec.id, projeto.id, 'dev', rec.publicado_dev); }}>
                           <button type="submit" className={`w-8 h-8 rounded-full inline-flex items-center justify-center transition-colors ${rec.publicado_dev ? 'bg-blue-500/20 text-blue-400 border border-blue-500/40 shadow-[0_0_10px_rgba(59,130,246,0.3)]' : 'bg-gray-900 border border-gray-700 text-transparent'}`}>✓</button>

@@ -6,6 +6,7 @@ import EditResourceModal from "@/components/EditResourceModal";
 import DeleteResourceButton from "@/components/DeleteResourceButton";
 import EditScopeModal from "@/components/EditScopeModal";
 import DeleteScopeButton from "@/components/DeleteScopeButton";
+import ExportButtons from "@/components/ExportButtons";
 
 export const dynamic = 'force-dynamic';
 
@@ -90,7 +91,10 @@ export default async function ProjectPage(props: { params: Promise<{ id: string 
 
         <div className="xl:col-span-3 space-y-6">
           <div className="card-md3 p-8 flex flex-col h-full shadow-sm bg-white overflow-hidden">
-            <h3 className="text-xl font-bold text-[#1f1f1f] mb-8">Recursos (Endpoints)</h3>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+               <h3 className="text-xl font-bold text-[#1f1f1f]">Recursos (Endpoints)</h3>
+               <ExportButtons projeto={projeto as any} />
+            </div>
             
             <div className="mb-10 pb-10 border-b border-[#f1f3f4]">
               <h4 className="text-sm font-bold text-[#5f6368] mb-6 flex items-center gap-2 uppercase tracking-widest">

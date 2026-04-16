@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { prisma } from "@/auth";
 
-async function SearchResults({ query }: { query: string }) {
+async function SearchResults({ query, page }: { query: string; page: number }) {
   if (!query) {
     return (
       <div className="text-gray-500 text-center py-12">
@@ -13,23 +13,46 @@ async function SearchResults({ query }: { query: string }) {
     );
   }
 
+  const ITEMS_PER_PAGE = 20;
+  const skip = (page - 1) * ITEMS_PER_PAGE;
+
   // Busca profunda com ILIKE (contains com mode: 'insensitive' no PostgreSQL via Prisma)
   // Requisito atendido: "O sistema deve encontrar termos específicos dentro das strings JSON armazenadas"
-  const resultados = await prisma.recurso.findMany({
-    where: {
-      OR: [
-        { path: { contains: query, mode: "insensitive" } },
-        { procedure_transacao: { contains: query, mode: "insensitive" } },
-        { request: { contains: query, mode: "insensitive" } },
-        { response: { contains: query, mode: "insensitive" } },
-        { anotacoes: { contains: query, mode: "insensitive" } },
-      ],
-    },
-    include: {
-      projeto: true,
-    },
-    take: 50, // Limitando resultados
-  });
+  // Buscamos resultados e o total simultaneamente
+  const [resultados, total] = await Promise.all([
+    prisma.recurso.findMany({
+      where: {
+        OR: [
+          { path: { contains: query, mode: "insensitive" } },
+          { procedure_transacao: { contains: query, mode: "insensitive" } },
+          { request: { contains: query, mode: "insensitive" } },
+          { response: { contains: query, mode: "insensitive" } },
+          { anotacoes: { contains: query, mode: "insensitive" } },
+        ],
+      },
+      include: {
+        projeto: true,
+      },
+      orderBy: {
+        id: 'desc'
+      },
+      skip,
+      take: ITEMS_PER_PAGE,
+    }),
+    prisma.recurso.count({
+      where: {
+        OR: [
+          { path: { contains: query, mode: "insensitive" } },
+          { procedure_transacao: { contains: query, mode: "insensitive" } },
+          { request: { contains: query, mode: "insensitive" } },
+          { response: { contains: query, mode: "insensitive" } },
+          { anotacoes: { contains: query, mode: "insensitive" } },
+        ],
+      },
+    })
+  ]);
+
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
 
   if (resultados.length === 0) {
     return <div className="text-gray-500 py-8">Nenhum endpoint encontrado para "{query}".</div>;
@@ -37,7 +60,10 @@ async function SearchResults({ query }: { query: string }) {
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-gray-400 mb-6">{resultados.length} resultados encontrados.</p>
+      <div className="flex justify-between items-center mb-6">
+        <p className="text-sm text-gray-400">{total} resultados encontrados. Exibindo página {page} de {totalPages}.</p>
+      </div>
+
       {resultados.map((recurso) => (
         <div key={recurso.id} className="card-md3 p-6 bg-white overflow-hidden">
           <div className="flex items-center justify-between mb-2">
@@ -68,14 +94,48 @@ async function SearchResults({ query }: { query: string }) {
           </div>
         </div>
       ))}
+
+      {/* Paginação */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between mt-10 pt-6 border-t border-[#e0e0e0]">
+          <div className="text-sm text-[#5f6368]">
+            Mostrando {skip + 1} - {Math.min(skip + ITEMS_PER_PAGE, total)} de {total} resultados
+          </div>
+          <div className="flex gap-3">
+            {page > 1 && (
+              <Link 
+                href={`?q=${query}&page=${page - 1}`}
+                className="px-6 py-2.5 border border-[#dadce0] rounded-full text-sm font-bold text-[#1a73e8] hover:bg-[#f8f9fa] hover:border-[#1a73e8] transition-all shadow-sm flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Anterior
+              </Link>
+            )}
+            {page < totalPages && (
+              <Link 
+                href={`?q=${query}&page=${page + 1}`}
+                className="px-6 py-2.5 border border-[#dadce0] rounded-full text-sm font-bold text-[#1a73e8] hover:bg-[#f8f9fa] hover:border-[#1a73e8] transition-all shadow-sm flex items-center gap-2"
+              >
+                Próxima
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 // Em vez de importar searchparams como prop dinâmico, na versão mais recente do nextjs o searchParams é uma promise:
-export default async function GlobalSearchPage(props: { searchParams?: Promise<{ q?: string }> }) {
+export default async function GlobalSearchPage(props: { searchParams?: Promise<{ q?: string; page?: string }> }) {
   const searchParams = await props.searchParams;
   const q = searchParams?.q || "";
+  const page = parseInt(searchParams?.page || "1", 10);
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-[1400px] mx-auto">
@@ -104,9 +164,10 @@ export default async function GlobalSearchPage(props: { searchParams?: Promise<{
       </div>
 
 
-      <Suspense key={q} fallback={<div className="flex justify-center p-12"><div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div></div>}>
-        <SearchResults query={q} />
+      <Suspense key={`${q}-${page}`} fallback={<div className="flex justify-center p-12"><div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div></div>}>
+        <SearchResults query={q} page={page} />
       </Suspense>
     </div>
   );
 }
+

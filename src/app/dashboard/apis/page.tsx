@@ -19,6 +19,7 @@ async function SearchResults({ query }: { query: string }) {
     where: {
       OR: [
         { path: { contains: query, mode: "insensitive" } },
+        { procedure_transacao: { contains: query, mode: "insensitive" } },
         { request: { contains: query, mode: "insensitive" } },
         { response: { contains: query, mode: "insensitive" } },
         { anotacoes: { contains: query, mode: "insensitive" } },
@@ -51,6 +52,9 @@ async function SearchResults({ query }: { query: string }) {
                 {recurso.metodo}
               </span>
               <span className="text-lg text-[#1f1f1f] font-mono font-medium">{recurso.path}</span>
+              {recurso.procedure_transacao && (
+                <span className="text-[10px] text-[#1a73e8] font-bold uppercase bg-[#e8f0fe] px-2 py-0.5 rounded border border-[#d2e3fc]">PROC/TRANS: {recurso.procedure_transacao}</span>
+              )}
             </div>
             <Link href={`/dashboard/projetos/${recurso.projeto_id}`} className="text-sm font-bold text-[#1a73e8] hover:underline transition">
               Acessar Projeto: {recurso.projeto.nome_projeto} &rarr;

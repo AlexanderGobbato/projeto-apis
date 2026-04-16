@@ -9,6 +9,7 @@ interface Recurso {
   path: string;
   request: string | null;
   response: string | null;
+  procedure_transacao: string | null;
   anotacoes: string | null;
   publicado_dev: boolean;
   publicado_hml: boolean;
@@ -73,6 +74,11 @@ export default function EditResourceModal({
               <label className="block text-xs font-bold text-[#444746] ml-1 uppercase">Path</label>
               <input name="path" defaultValue={recurso.path} required className="w-full bg-[#f1f3f4] border-b-2 border-transparent focus:border-[#1a73e8] rounded-t-lg px-4 py-3 text-[#1f1f1f] focus:outline-none transition-colors" />
             </div>
+          </div>
+
+          <div className="space-y-1">
+            <label className="block text-xs font-bold text-[#444746] ml-1 uppercase">Procedure ou Transação</label>
+            <input name="procedure_transacao" defaultValue={recurso.procedure_transacao || ""} className="w-full bg-[#f1f3f4] border-b-2 border-transparent focus:border-[#1a73e8] rounded-t-lg px-4 py-3 text-[#1f1f1f] focus:outline-none transition-colors" placeholder="Ex: PR_GET_USER ou FRM_TRANS_01" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

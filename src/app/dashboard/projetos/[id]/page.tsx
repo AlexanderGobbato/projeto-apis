@@ -112,6 +112,9 @@ export default async function ProjectPage(props: { params: Promise<{ id: string 
                     <input name="path" required className="w-full bg-[#f1f3f4] border-b-2 border-transparent focus:border-[#1a73e8] rounded-t-lg px-4 py-3 text-sm text-[#1f1f1f] focus:outline-none" placeholder="/api/v1/modulo/:id" />
                   </div>
                 </div>
+                <div>
+                  <input name="procedure_transacao" className="w-full bg-[#f1f3f4] border-b-2 border-transparent focus:border-[#1a73e8] rounded-t-lg px-4 py-3 text-sm text-[#1f1f1f] focus:outline-none" placeholder="Procedure ou Transação Noov-D..." />
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                    <textarea name="request" rows={3} className="w-full bg-[#f8f9fa] border border-[#e0e0e0] rounded-xl px-4 py-3 text-xs text-[#444746] font-mono resize-none focus:ring-1 focus:ring-[#1a73e8] focus:bg-white outline-none" placeholder="Exemplo de Request (JSON)..."></textarea>
                    <textarea name="response" rows={3} className="w-full bg-[#f8f9fa] border border-[#e0e0e0] rounded-xl px-4 py-3 text-xs text-[#444746] font-mono resize-none focus:ring-1 focus:ring-[#1a73e8] focus:bg-white outline-none" placeholder="Exemplo de Response (JSON)..."></textarea>
@@ -148,7 +151,10 @@ export default async function ProjectPage(props: { params: Promise<{ id: string 
                         }`}>{rec.metodo}</span>
                       </td>
                       <td className="py-5 px-4">
-                        <div className="text-sm font-medium text-[#1f1f1f] font-mono mb-2">{rec.path}</div>
+                        <div className="text-sm font-medium text-[#1f1f1f] font-mono mb-1">{rec.path}</div>
+                        {rec.procedure_transacao && (
+                          <div className="text-[10px] text-[#1a73e8] font-bold uppercase mb-2">Procedure/Transação: {rec.procedure_transacao}</div>
+                        )}
                         <div className="flex gap-4">
                           {rec.request && (
                             <details className="text-[10px] text-[#70757a] cursor-pointer group/json">
@@ -194,6 +200,7 @@ export default async function ProjectPage(props: { params: Promise<{ id: string 
                               path: rec.path,
                               request: rec.request,
                               response: rec.response,
+                              procedure_transacao: rec.procedure_transacao,
                               anotacoes: rec.anotacoes,
                               publicado_dev: rec.publicado_dev,
                               publicado_hml: rec.publicado_hml,

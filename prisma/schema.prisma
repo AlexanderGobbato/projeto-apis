@@ -50,4 +50,7 @@ model Recurso {
   publicado_dev       Boolean  @default(false)
   publicado_hml       Boolean  @default(false)
   publicado_prd       Boolean  @default(false)
+  tag                 String?
+  descricao           String?
+  modelo_json         Json?
 }

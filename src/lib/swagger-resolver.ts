@@ -91,11 +91,34 @@ export function parseSwagger(swagger: SwaggerJSON): ResolvedProject {
   
   const scopes: { nome: string; descricao: string }[] = [];
   if (swagger.components?.securitySchemes) {
-    for (const [key, scheme] of Object.entries(swagger.components.securitySchemes)) {
-      scopes.push({
-        nome: key,
-        descricao: scheme.description || ""
-      });
+    for (const [_, scheme] of Object.entries(swagger.components.securitySchemes)) {
+      const s = scheme as any;
+      // Trata OpenAPI 3: securitySchemes -> [scheme] -> flows -> [flow] -> scopes
+      if (s.flows) {
+        for (const flow of Object.values(s.flows) as any[]) {
+          if (flow.scopes) {
+            for (const [scopeKey, scopeDesc] of Object.entries(flow.scopes)) {
+              if (!scopes.some(item => item.nome === scopeKey)) {
+                scopes.push({
+                  nome: scopeKey,
+                  descricao: scopeDesc as string
+                });
+              }
+            }
+          }
+        }
+      } 
+      // Trata formatos legados ou alternativos onde scopes está no topo do scheme
+      else if (s.scopes) {
+        for (const [scopeKey, scopeDesc] of Object.entries(s.scopes)) {
+          if (!scopes.some(item => item.nome === scopeKey)) {
+            scopes.push({
+              nome: scopeKey,
+              descricao: scopeDesc as string
+            });
+          }
+        }
+      }
     }
   }
 

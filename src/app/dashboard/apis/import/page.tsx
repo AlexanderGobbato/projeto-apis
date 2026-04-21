@@ -166,16 +166,17 @@ export default function ImportSwaggerPage() {
                 <table className="w-full text-left">
                   <thead>
                     <tr className="border-b border-[#f1f3f4] text-[10px] font-bold text-[#5f6368] uppercase tracking-[0.2em] bg-[#f8f9fa]">
-                      <th className="py-4 px-4 rounded-tl-xl">Método</th>
+                      <th className="py-4 px-4 rounded-tl-xl text-center">Método</th>
                       <th className="py-4 px-4">Path / Descrição</th>
-                      <th className="py-4 px-4">Tag</th>
-                      <th className="py-4 px-4 rounded-tr-xl">Mock Resposta</th>
+                      <th className="py-4 px-4 text-center">Tag</th>
+                      <th className="py-4 px-4">Request (Params/Body)</th>
+                      <th className="py-4 px-4 rounded-tr-xl">Response (Mock)</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#f8f9fa]">
                     {previewData.recursos.map((rec, i) => (
                       <tr key={i} className="hover:bg-[#f8f9fa] transition-colors">
-                        <td className="py-4 px-4">
+                        <td className="py-4 px-4 text-center">
                           <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border shadow-sm ${
                             rec.metodo === 'GET' ? 'bg-[#e8f0fe] text-[#1a73e8] border-[#d2e3fc]' : 
                             rec.metodo === 'POST' ? 'bg-[#e6f4ea] text-[#1e8e3e] border-[#ceead6]' : 
@@ -184,22 +185,48 @@ export default function ImportSwaggerPage() {
                             'bg-[#f1f3f4] text-[#5f6368] border-[#e0e0e0]'
                           }`}>{rec.metodo}</span>
                         </td>
-                        <td className="py-4 px-4">
+                        <td className="py-4 px-4 min-w-[200px]">
                           <p className="text-sm font-mono font-medium text-[#1f1f1f]">{rec.path}</p>
-                          <p className="text-xs text-[#5f6368] mt-1 line-clamp-1">{rec.descricao || "Sem descrição"}</p>
+                          <p className="text-xs text-[#5f6368] mt-1 line-clamp-2">{rec.descricao || "Sem descrição"}</p>
                         </td>
-                        <td className="py-4 px-4">
-                          <span className="text-[10px] font-bold text-[#5f6368] bg-[#f1f3f4] px-2 py-0.5 rounded border border-[#e0e0e0]">
+                        <td className="py-4 px-4 text-center">
+                          <span className="text-[10px] font-bold text-[#5f6368] bg-[#f1f3f4] px-2 py-0.5 rounded border border-[#e0e0e0] whitespace-nowrap">
                             {rec.tag}
                           </span>
                         </td>
                         <td className="py-4 px-4">
-                          <details className="text-[10px] cursor-pointer group/json">
-                             <summary className="text-[#1a73e8] font-bold uppercase hover:underline list-none">Ver Mock</summary>
-                             <pre className="mt-2 p-3 bg-[#f8f9fa] border border-[#e0e0e0] rounded-lg text-[9px] font-mono max-w-xs overflow-auto max-h-32 shadow-inner">
-                               {JSON.stringify(rec.modelo_json, null, 2)}
-                             </pre>
-                          </details>
+                          <div className="max-w-xs">
+                            {rec.request ? (
+                              <details className="text-[10px] cursor-pointer group/json">
+                                <summary className="text-[#1a73e8] font-bold uppercase hover:underline list-none flex items-center gap-1">
+                                  <span>{rec.request.includes('(query)') ? 'Params/Query' : 'Body JSON'}</span>
+                                  <svg className="w-3 h-3 group-open/json:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                                </summary>
+                                <pre className="mt-2 p-3 bg-[#f8f9fa] border border-[#e0e0e0] rounded-lg text-[10px] font-mono overflow-auto max-h-32 shadow-inner whitespace-pre-wrap">
+                                  {rec.request}
+                                </pre>
+                              </details>
+                            ) : (
+                              <span className="text-[10px] text-gray-400 italic">Nenhum</span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="py-4 px-4">
+                          <div className="max-w-xs">
+                            {rec.response ? (
+                              <details className="text-[10px] cursor-pointer group/json">
+                                <summary className="text-[#1e8e3e] font-bold uppercase hover:underline list-none flex items-center gap-1">
+                                  <span>Body Mock</span>
+                                  <svg className="w-3 h-3 group-open/json:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                                </summary>
+                                <pre className="mt-2 p-3 bg-[#f8f9fa] border border-[#e0e0e0] rounded-lg text-[10px] font-mono overflow-auto max-h-32 shadow-inner">
+                                  {rec.response}
+                                </pre>
+                              </details>
+                            ) : (
+                              <span className="text-[10px] text-gray-400 italic">Nenhum</span>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}

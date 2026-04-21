@@ -107,23 +107,37 @@ export function parseSwagger(swagger: SwaggerJSON): ResolvedProject {
         const tag = details.tags?.[0] || "Geral";
         const descricao = details.description || details.summary || "";
         
+        // Extração de parâmetros de query
+        const queryParams = details.parameters
+          ?.filter((p: any) => p.in === 'query')
+          .map((p: any) => p.name) || [];
+        
+        const queryParamsStr = queryParams.length > 0 ? `${queryParams.join(', ')} (query)` : "";
+
         // Tenta extrair o request e response originais (strings)
-        // No Swagger, requestBody costuma ter um content/application/json/schema
         const requestSchema = details.requestBody?.content?.['application/json']?.schema;
         const responseSchema = details.responses?.['200']?.content?.['application/json']?.schema 
                             || details.responses?.['201']?.content?.['application/json']?.schema;
 
-        const requestBody = requestSchema ? resolveSchema(requestSchema, swagger.components) : null;
-        const responseBody = responseSchema ? resolveSchema(responseSchema, swagger.components) : null;
+        const requestMock = requestSchema ? resolveSchema(requestSchema, swagger.components) : null;
+        const responseMock = responseSchema ? resolveSchema(responseSchema, swagger.components) : null;
+
+        // Regra de mapeamento:
+        // Request: QueryParams + Mock do Body (se houver)
+        let finalRequest = queryParamsStr;
+        if (requestMock) {
+          const bodyStr = JSON.stringify(requestMock, null, 2);
+          finalRequest = finalRequest ? `${finalRequest}\n\n${bodyStr}` : bodyStr;
+        }
 
         recursos.push({
           path,
           metodo: metodo.toUpperCase(),
           tag,
           descricao,
-          request: requestBody ? JSON.stringify(requestBody, null, 2) : "",
-          response: responseBody ? JSON.stringify(responseBody, null, 2) : "",
-          modelo_json: responseBody as JsonValue
+          request: finalRequest,
+          response: responseMock ? JSON.stringify(responseMock, null, 2) : "",
+          modelo_json: responseMock as JsonValue
         });
       }
     }
